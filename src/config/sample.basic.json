@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "title": "Basic Contact Form",
+    "version": "1.0"
+  },
+  "theme": {
+    "primaryColor": "#1677ff",
+    "size": "middle",
+    "labelAlign": "left",
+    "labelCol": { "span": 6 },
+    "wrapperCol": { "span": 18 }
+  },
+  "layout": {
+    "maxWidth": 800,
+    "gutter": 16
+  },
+  "initialValues": {
+    "contact": {
+      "newsletter": false
+    }
+  },
+  "steps": [
+    {
+      "id": "contact-info",
+      "title": "Contact Information",
+      "sections": [
+        {
+          "id": "personal",
+          "title": "Personal Details",
+          "columns": 2,
+          "fields": [
+            {
+              "type": "text",
+              "name": "contact.firstName",
+              "label": "First Name",
+              "required": true,
+              "placeholder": "Enter your first name",
+              "validation": {
+                "type": "string",
+                "min": 2,
+                "requiredMessage": "First name is required"
+              }
+            },
+            {
+              "type": "text",
+              "name": "contact.lastName",
+              "label": "Last Name",
+              "required": true,
+              "placeholder": "Enter your last name",
+              "validation": {
+                "type": "string",
+                "min": 2,
+                "requiredMessage": "Last name is required"
+              }
+            },
+            {
+              "type": "text",
+              "name": "contact.email",
+              "label": "Email Address",
+              "required": true,
+              "placeholder": "Enter your email",
+              "validation": {
+                "type": "string",
+                "email": true,
+                "requiredMessage": "Email is required"
+              }
+            },
+            {
+              "type": "text",
+              "name": "contact.phone",
+              "label": "Phone Number",
+              "placeholder": "Enter your phone number",
+              "validation": {
+                "type": "string",
+                "regex": "^[\\+]?[(]?[\\d\\s\\-\\(\\)]{10,}$"
+              }
+            }
+          ]
+        },
+        {
+          "id": "preferences",
+          "title": "Preferences",
+          "fields": [
+            {
+              "type": "switch",
+              "name": "contact.newsletter",
+              "label": "Subscribe to newsletter",
+              "checkedChildren": "Yes",
+              "unCheckedChildren": "No"
+            },
+            {
+              "type": "select",
+              "name": "contact.contactMethod",
+              "label": "Preferred Contact Method",
+              "placeholder": "Select contact method",
+              "visibleWhen": [
+                {
+                  "op": "truthy",
+                  "left": "contact.newsletter"
+                }
+              ],
+              "options": {
+                "source": "static",
+                "static": [
+                  { "label": "Email", "value": "email" },
+                  { "label": "Phone", "value": "phone" },
+                  { "label": "SMS", "value": "sms" }
+                ]
+              }
+            },
+            {
+              "type": "textarea",
+              "name": "contact.message",
+              "label": "Message",
+              "placeholder": "Enter your message (optional)",
+              "rows": 4,
+              "validation": {
+                "type": "string",
+                "max": 500
+              }
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "id": "submit",
+          "type": "submit",
+          "label": "Send Message"
+        },
+        {
+          "id": "reset",
+          "type": "reset",
+          "label": "Clear Form"
+        }
+      ]
+    }
+  ]
+}

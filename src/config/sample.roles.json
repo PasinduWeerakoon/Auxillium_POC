@@ -1,0 +1,319 @@
+{
+  "meta": {
+    "title": "Role-Based Access Demo",
+    "version": "1.0",
+    "description": "Demonstration of role-based field, tab, and step restrictions"
+  },
+  "theme": {
+    "primaryColor": "#1677ff",
+    "size": "middle",
+    "labelAlign": "left",
+    "labelCol": { "span": 6 },
+    "wrapperCol": { "span": 18 }
+  },
+  "layout": {
+    "maxWidth": 1000,
+    "gutter": 16
+  },
+  "initialValues": {
+    "user": {
+      "status": "active"
+    }
+  },
+  "steps": [
+    {
+      "id": "basic-info",
+      "title": "Basic Information",
+      "description": "Information visible to all users",
+      "sections": [
+        {
+          "id": "public-info",
+          "title": "Public Information",
+          "fields": [
+            {
+              "type": "text",
+              "name": "user.name",
+              "label": "Full Name",
+              "required": true,
+              "placeholder": "Enter your full name",
+              "validation": {
+                "type": "string",
+                "min": 2,
+                "requiredMessage": "Name is required"
+              }
+            },
+            {
+              "type": "text",
+              "name": "user.email",
+              "label": "Email Address",
+              "required": true,
+              "placeholder": "Enter your email",
+              "validation": {
+                "type": "string",
+                "email": true
+              }
+            },
+            {
+              "type": "select",
+              "name": "user.department",
+              "label": "Department",
+              "allowedRoles": ["sales", "admin"],
+              "placeholder": "Select department",
+              "options": {
+                "source": "static",
+                "static": [
+                  { "label": "Sales", "value": "sales" },
+                  { "label": "Marketing", "value": "marketing" },
+                  { "label": "Engineering", "value": "engineering" },
+                  { "label": "HR", "value": "hr" }
+                ]
+              }
+            },
+            {
+              "type": "text",
+              "name": "user.employeeId",
+              "label": "Employee ID",
+              "minRole": "sales",
+              "placeholder": "Enter employee ID",
+              "help": "Visible to Sales and Admin only"
+            }
+          ]
+        },
+        {
+          "id": "admin-only-section",
+          "title": "Administrative Controls",
+          "allowedRoles": ["admin"],
+          "fields": [
+            {
+              "type": "select",
+              "name": "user.status",
+              "label": "User Status",
+              "placeholder": "Select status",
+              "options": {
+                "source": "static",
+                "static": [
+                  { "label": "Active", "value": "active" },
+                  { "label": "Inactive", "value": "inactive" },
+                  { "label": "Suspended", "value": "suspended" }
+                ]
+              }
+            },
+            {
+              "type": "switch",
+              "name": "user.canModifyOthers",
+              "label": "Can Modify Other Users",
+              "checkedChildren": "Yes",
+              "unCheckedChildren": "No"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "id": "next",
+          "type": "next",
+          "label": "Next"
+        }
+      ]
+    },
+    {
+      "id": "financial-info",
+      "title": "Financial Information",
+      "minRole": "sales",
+      "description": "Sensitive financial data - Sales and Admin only",
+      "tabs": [
+        {
+          "id": "salary-tab",
+          "title": "Salary Info",
+          "allowedRoles": ["admin"],
+          "fields": [
+            {
+              "type": "number",
+              "name": "user.salary",
+              "label": "Annual Salary",
+              "placeholder": "Enter salary amount",
+              "validation": {
+                "type": "number",
+                "min": 0
+              }
+            },
+            {
+              "type": "number",
+              "name": "user.bonus",
+              "label": "Annual Bonus",
+              "placeholder": "Enter bonus amount",
+              "validation": {
+                "type": "number",
+                "min": 0
+              }
+            },
+            {
+              "type": "text",
+              "name": "user.totalCompensation",
+              "label": "Total Compensation",
+              "computed": {
+                "expr": "(user.salary || 0) + (user.bonus || 0)",
+                "deps": ["user.salary", "user.bonus"],
+                "readOnly": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "commission-tab",
+          "title": "Commission",
+          "minRole": "sales",
+          "fields": [
+            {
+              "type": "number",
+              "name": "user.commissionRate",
+              "label": "Commission Rate (%)",
+              "placeholder": "Enter commission percentage",
+              "validation": {
+                "type": "number",
+                "min": 0,
+                "max": 100
+              }
+            },
+            {
+              "type": "number",
+              "name": "user.salesTarget",
+              "label": "Annual Sales Target",
+              "placeholder": "Enter sales target",
+              "validation": {
+                "type": "number",
+                "min": 0
+              }
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "id": "prev",
+          "type": "prev",
+          "label": "Previous"
+        },
+        {
+          "id": "next",
+          "type": "next",
+          "label": "Next"
+        }
+      ]
+    },
+    {
+      "id": "system-admin",
+      "title": "System Administration",
+      "allowedRoles": ["admin"],
+      "description": "System administration settings - Admin only",
+      "fields": [
+        {
+          "type": "checkbox",
+          "name": "user.permissions",
+          "label": "System Permissions",
+          "options": {
+            "source": "static",
+            "static": [
+              { "label": "User Management", "value": "user_mgmt" },
+              { "label": "System Configuration", "value": "sys_config" },
+              { "label": "Financial Reports", "value": "fin_reports" },
+              { "label": "Audit Logs", "value": "audit_logs" }
+            ]
+          }
+        },
+        {
+          "type": "textarea",
+          "name": "user.adminNotes",
+          "label": "Administrative Notes",
+          "placeholder": "Enter admin notes (internal use only)",
+          "rows": 4
+        },
+        {
+          "type": "array",
+          "name": "user.accessLogs",
+          "itemLabel": "Access Log",
+          "maxItems": 5,
+          "itemSchema": {
+            "fields": [
+              {
+                "type": "datetime",
+                "name": "timestamp",
+                "label": "Access Time"
+              },
+              {
+                "type": "text",
+                "name": "action",
+                "label": "Action Performed"
+              },
+              {
+                "type": "text",
+                "name": "ip",
+                "label": "IP Address"
+              }
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "prev",
+          "type": "prev",
+          "label": "Previous"
+        },
+        {
+          "id": "submit",
+          "type": "submit",
+          "label": "Save Configuration"
+        }
+      ]
+    },
+    {
+      "id": "summary",
+      "title": "Summary",
+      "description": "Review your information",
+      "deniedRoles": ["guest"],
+      "fields": [
+        {
+          "type": "text",
+          "name": "summary.createdBy",
+          "label": "Created By",
+          "computed": {
+            "expr": "user.name || 'Unknown User'",
+            "deps": ["user.name"],
+            "readOnly": true
+          }
+        },
+        {
+          "type": "text",
+          "name": "summary.department",
+          "label": "Department",
+          "visibleWhen": [
+            {
+              "op": "notEmpty",
+              "left": "user.department"
+            }
+          ],
+          "computed": {
+            "expr": "user.department || 'Not specified'",
+            "deps": ["user.department"],
+            "readOnly": true
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "prev",
+          "type": "prev",
+          "label": "Previous"
+        },
+        {
+          "id": "submit",
+          "type": "submit",
+          "label": "Submit"
+        }
+      ]
+    }
+  ]
+}
+
+

@@ -1,0 +1,204 @@
+{
+  "meta": { "title": "KYC Application", "version": "1.0" },
+  "theme": {
+    "primaryColor": "#1677ff",
+    "size": "middle",
+    "labelAlign": "left",
+    "labelCol": { "span": 8 },
+    "wrapperCol": { "span": 16 }
+  },
+  "layout": { "maxWidth": 1080, "gutter": 16 },
+  "initialValues": { "user": { "wantsNewsletter": true }, "assets": [] },
+  "steps": [
+    {
+      "id": "profile",
+      "title": "Profile",
+      "sections": [
+        {
+          "id": "basic",
+          "title": "Basic Information",
+          "columns": 2,
+          "fields": [
+            {
+              "type": "text",
+              "name": "user.firstName",
+              "label": "First Name",
+              "required": true,
+              "validation": {
+                "type": "string",
+                "min": 2,
+                "requiredMessage": "First name is required"
+              }
+            },
+            {
+              "type": "text",
+              "name": "user.lastName",
+              "label": "Last Name",
+              "required": true,
+              "validation": { "type": "string", "min": 2 }
+            },
+            {
+              "type": "date",
+              "name": "user.dob",
+              "label": "Date of Birth",
+              "validation": { "type": "date" }
+            },
+            {
+              "type": "select",
+              "name": "user.country",
+              "label": "Country",
+              "validation": {
+                "type": "string",
+                "requiredMessage": "Select a country"
+              },
+              "options": {
+                "source": "api",
+                "api": {
+                  "url": "/api/countries",
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "prefs",
+          "title": "Preferences",
+          "fields": [
+            {
+              "type": "switch",
+              "name": "user.wantsNewsletter",
+              "label": "Subscribe to newsletter?"
+            },
+            {
+              "type": "text",
+              "name": "user.email",
+              "label": "Email",
+              "visibleWhen": [
+                { "op": "truthy", "left": "user.wantsNewsletter" }
+              ],
+              "validation": { "type": "string", "email": true }
+            }
+          ]
+        }
+      ],
+      "actions": [{ "id": "next", "type": "next", "label": "Next" }]
+    },
+    {
+      "id": "financials",
+      "title": "Financials",
+      "tabs": [
+        {
+          "id": "income",
+          "title": "Income",
+          "fields": [
+            {
+              "type": "number",
+              "name": "finance.salary",
+              "label": "Monthly Salary",
+              "validation": { "type": "number", "min": 0 }
+            },
+            {
+              "type": "number",
+              "name": "finance.bonus",
+              "label": "Annual Bonus",
+              "validation": { "type": "number", "min": 0 }
+            },
+            {
+              "type": "text",
+              "name": "finance.total",
+              "label": "Estimated Annual Total",
+              "computed": {
+                "expr": "(finance.salary ?? 0) * 12 + (finance.bonus ?? 0)",
+                "deps": ["finance.salary", "finance.bonus"],
+                "readOnly": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "assets",
+          "title": "Assets",
+          "fields": [
+            {
+              "type": "array",
+              "name": "assets",
+              "itemLabel": "Asset",
+              "itemSchema": {
+                "fields": [
+                  {
+                    "type": "text",
+                    "name": "name",
+                    "label": "Name",
+                    "validation": { "type": "string", "min": 1 }
+                  },
+                  {
+                    "type": "number",
+                    "name": "value",
+                    "label": "Value",
+                    "validation": { "type": "number", "min": 0 }
+                  },
+                  {
+                    "type": "select",
+                    "name": "category",
+                    "label": "Category",
+                    "options": {
+                      "source": "static",
+                      "static": [
+                        { "label": "Cash", "value": "cash" },
+                        { "label": "Stock", "value": "stock" },
+                        { "label": "Real Estate", "value": "re" }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "minItems": 0
+            },
+            {
+              "type": "table",
+              "name": "assetsTable",
+              "label": "Assets Table",
+              "editable": true,
+              "columns": [
+                { "key": "name", "title": "Name", "type": "text" },
+                {
+                  "key": "value",
+                  "title": "Value",
+                  "type": "number",
+                  "validation": { "type": "number", "min": 0 }
+                },
+                {
+                  "key": "category",
+                  "title": "Category",
+                  "type": "select",
+                  "options": {
+                    "source": "static",
+                    "static": [
+                      { "label": "Cash", "value": "cash" },
+                      { "label": "Stock", "value": "stock" },
+                      { "label": "Real Estate", "value": "re" }
+                    ]
+                  }
+                }
+              ],
+              "dataPath": "assets"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        { "id": "prev", "type": "prev", "label": "Back" },
+        { "id": "submit", "type": "submit", "label": "Submit" },
+        {
+          "id": "saveDraft",
+          "type": "custom",
+          "label": "Save Draft",
+          "action": "apiCall",
+          "api": { "url": "/api/drafts", "method": "POST" }
+        }
+      ]
+    }
+  ]
+}
