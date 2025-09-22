@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { useField } from 'formik';
 import { loadApiOptions } from '../../lib/api';
-
 const { Option } = Select;
-
-/**
- * Select Field component
- */
 const SelectField = ({ 
   field, 
   formikProps, 
@@ -21,17 +16,12 @@ const SelectField = ({
   const { setFieldValue, setFieldTouched, values } = formikProps;
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // Load options on mount and when dependencies change
   useEffect(() => {
     loadOptions();
   }, [field.options, values]);
-
   const loadOptions = async () => {
     if (!field.options) return;
-
     const { source, static: staticOptions, api } = field.options;
-
     if (source === 'static' && staticOptions) {
       setOptions(staticOptions);
     } else if (source === 'api' && api) {
@@ -47,15 +37,12 @@ const SelectField = ({
       }
     }
   };
-
   const handleChange = (value) => {
     setFieldValue(field.name, value);
   };
-
   const handleBlur = () => {
     setFieldTouched(field.name, true);
   };
-
   const selectProps = {
     value: formikField.value,
     onChange: handleChange,
@@ -68,20 +55,17 @@ const SelectField = ({
     loading,
     allowClear: field.allowClear !== false,
     showSearch: field.showSearch || false,
-    mode: field.mode, // 'multiple', 'tags', etc.
+    mode: field.mode, 
     maxTagCount: field.maxTagCount,
     filterOption: field.filterOption !== false,
     notFoundContent: field.notFoundContent,
   };
-
-  // Handle search functionality
   if (field.showSearch) {
     selectProps.filterOption = (input, option) => {
       const label = option.children || option.label || '';
       return label.toLowerCase().includes(input.toLowerCase());
     };
   }
-
   return (
     <Select {...selectProps}>
       {options.map((option, index) => (
@@ -96,5 +80,4 @@ const SelectField = ({
     </Select>
   );
 };
-
 export default SelectField;

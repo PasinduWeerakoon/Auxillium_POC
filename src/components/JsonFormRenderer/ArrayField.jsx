@@ -4,10 +4,6 @@ import { PlusOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import { FieldArray, useField } from 'formik';
 import FieldRenderer from './FieldRenderer';
 import { deepClone } from '../../lib/utils';
-
-/**
- * Array Field component for dynamic lists
- */
 const ArrayField = ({ 
   field, 
   formikProps, 
@@ -18,7 +14,6 @@ const ArrayField = ({
 }) => {
   const [formikField, meta] = useField(field.name);
   const { values } = formikProps;
-
   const {
     itemLabel = 'Item',
     itemSchema,
@@ -32,11 +27,8 @@ const ArrayField = ({
     variant = "outlined",
     collapsible = false,
   } = field;
-
-  // Create default item based on schema
   const createDefaultItem = () => {
     const defaultItem = {};
-    
     if (itemSchema && itemSchema.fields) {
       itemSchema.fields.forEach(fieldDef => {
         if (fieldDef.name && fieldDef.defaultValue !== undefined) {
@@ -44,18 +36,15 @@ const ArrayField = ({
         }
       });
     }
-    
     return defaultItem;
   };
-
   return (
     <FieldArray name={field.name}>
       {({ push, remove, form }) => {
         const fieldValues = formikField.value || [];
-        
         return (
           <div className={`array-field ${className || ''}`} style={style}>
-            {/* Array items */}
+            {}
             {fieldValues.map((item, index) => (
               <ArrayItem
                 key={index}
@@ -77,8 +66,7 @@ const ArrayField = ({
                 onCopy={() => push(deepClone(item))}
               />
             ))}
-
-            {/* Add button */}
+            {}
             {(!maxItems || fieldValues.length < maxItems) && (
               <Card size="small" className="array-add-item">
                 <Button
@@ -92,8 +80,7 @@ const ArrayField = ({
                 </Button>
               </Card>
             )}
-
-            {/* Info text */}
+            {}
             {(minItems > 0 || maxItems) && (
               <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
                 {minItems > 0 && `Minimum: ${minItems} items`}
@@ -107,10 +94,6 @@ const ArrayField = ({
     </FieldArray>
   );
 };
-
-/**
- * Individual array item component
- */
 const ArrayItem = ({
   index,
   item,
@@ -130,7 +113,6 @@ const ArrayItem = ({
   onCopy,
 }) => {
   const [collapsed, setCollapsed] = React.useState(false);
-
   const title = (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <span>{itemLabel} {index + 1}</span>
@@ -168,16 +150,13 @@ const ArrayItem = ({
       </Space>
     </div>
   );
-
   const content = (
     <div className="array-item-content">
       {itemSchema && itemSchema.fields && itemSchema.fields.map((fieldDef, fieldIndex) => {
-        // Create field with array index in name
         const fieldWithPath = {
           ...fieldDef,
           name: `${fieldName}.${index}.${fieldDef.name}`,
         };
-
         return (
           <FieldRenderer
             key={fieldDef.name || fieldIndex}
@@ -190,7 +169,6 @@ const ArrayItem = ({
       })}
     </div>
   );
-
   if (variant !== "borderless") {
     return (
       <Card
@@ -204,7 +182,6 @@ const ArrayItem = ({
       </Card>
     );
   }
-
   return (
     <div className="array-item" style={{ marginBottom: '16px' }}>
       <div className="array-item-header">
@@ -219,5 +196,4 @@ const ArrayItem = ({
     </div>
   );
 };
-
 export default ArrayField;

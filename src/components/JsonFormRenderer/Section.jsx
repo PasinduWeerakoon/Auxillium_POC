@@ -2,10 +2,6 @@ import React from 'react';
 import { Row, Col, Card } from 'antd';
 import FieldRenderer from './FieldRenderer';
 import { getResponsiveColumns } from '../../lib/theming';
-
-/**
- * Section component for rendering groups of fields
- */
 const Section = ({ section, formikProps, formConfig, layout, userRole }) => {
   const { 
     id, 
@@ -17,29 +13,20 @@ const Section = ({ section, formikProps, formConfig, layout, userRole }) => {
     collapsible = false,
     defaultCollapsed = false 
   } = section;
-
-  // Get responsive column configuration
   const columnConfig = getResponsiveColumns({ ...layout, columns });
-
-  // Calculate responsive column spans
   const getColSpan = (field) => {
     const fieldColumns = field.columns || 1;
     const sectionColumns = columns || 1;
-    
-    // Calculate span based on field's column requirement
     const span = Math.floor(24 / Math.min(sectionColumns, fieldColumns));
-    
     return {
-      xs: 24, // Always full width on mobile
-      sm: Math.min(24, span * 2), // Double width on small screens
+      xs: 24, 
+      sm: Math.min(24, span * 2), 
       md: span,
       lg: span,
       xl: span,
       xxl: span,
     };
   };
-
-  // Render section content
   const renderContent = () => (
     <div className="section-content">
       {description && (
@@ -47,7 +34,6 @@ const Section = ({ section, formikProps, formConfig, layout, userRole }) => {
           <p>{description}</p>
         </div>
       )}
-      
       <Row gutter={columnConfig.gutter}>
         {fields.map((field, index) => (
           <Col
@@ -65,8 +51,6 @@ const Section = ({ section, formikProps, formConfig, layout, userRole }) => {
       </Row>
     </div>
   );
-
-  // If section has title or variant, wrap in Card
   if (title || variant !== "borderless" || collapsible) {
     const cardProps = {
       title,
@@ -74,25 +58,19 @@ const Section = ({ section, formikProps, formConfig, layout, userRole }) => {
       variant,
       className: 'form-section-card',
     };
-
-    // Add collapsible props if needed
     if (collapsible) {
-      cardProps.extra = null; // Could add collapse button here
+      cardProps.extra = null; 
     }
-
     return (
       <Card {...cardProps}>
         {renderContent()}
       </Card>
     );
   }
-
-  // Otherwise render content directly
   return (
     <div className={`form-section ${id ? `form-section-${id}` : ''}`}>
       {renderContent()}
     </div>
   );
 };
-
 export default Section;

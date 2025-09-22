@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { Input, ColorPicker, Space } from 'antd';
 import { useField } from 'formik';
-
-/**
- * Color Field component
- */
 const ColorField = ({ 
   field, 
   formikProps, 
@@ -17,23 +13,19 @@ const ColorField = ({
   const [formikField, meta] = useField(field.name);
   const { setFieldValue, setFieldTouched } = formikProps;
   const [colorValue, setColorValue] = useState(formikField.value || '#000000');
-
   const handleColorChange = (color, hex) => {
     const value = hex || color.toHexString();
     setColorValue(value);
     setFieldValue(field.name, value);
   };
-
   const handleInputChange = (e) => {
     const value = e.target.value;
     setColorValue(value);
     setFieldValue(field.name, value);
   };
-
   const handleBlur = () => {
     setFieldTouched(field.name, true);
   };
-
   const colorPickerProps = {
     value: colorValue,
     onChange: handleColorChange,
@@ -61,8 +53,6 @@ const ColorField = ({
       },
     ],
   };
-
-  // Show input alongside color picker if specified
   if (field.showInput !== false) {
     return (
       <Space.Compact style={{ width: '100%' }}>
@@ -80,8 +70,6 @@ const ColorField = ({
       </Space.Compact>
     );
   }
-
   return <ColorPicker {...colorPickerProps} />;
 };
-
 export default ColorField;

@@ -1,11 +1,8 @@
-/* Global styles for the JSON Form Renderer application */
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
     "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -15,19 +12,15 @@ body {
   color: #333;
   line-height: 1.6;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-/* JSON Form Renderer Styles */
 .json-form-renderer {
   background: #fff;
   border-radius: 8px;
   overflow: hidden;
 }
-
 .json-form-renderer-error {
   padding: 24px;
   text-align: center;
@@ -36,80 +29,58 @@ code {
   border: 1px solid #ffccc7;
   border-radius: 6px;
 }
-
-/* Step Wizard Styles */
 .step-wizard {
   width: 100%;
 }
-
 .steps-navigation {
   margin-bottom: 0;
 }
-
 .step-content-card {
   min-height: 400px;
 }
-
 .step-content {
   min-height: 300px;
 }
-
-/* Form Section Styles */
 .form-section {
   margin-bottom: 16px;
 }
-
 .form-section-card {
   margin-bottom: 16px;
 }
-
 .section-description {
   margin-bottom: 16px;
   color: #666;
 }
-
-/* Tab Container Styles */
 .tab-container {
   width: 100%;
 }
-
 .tab-content {
   padding-top: 16px;
 }
-
 .tab-sections {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-
-/* Actions Bar Styles */
 .actions-bar {
   margin-top: 16px;
 }
-
 .step-info {
   color: #666;
   font-size: 14px;
 }
-
-/* Array Field Styles */
 .array-field {
   width: 100%;
 }
-
 .array-item-card {
   transition: all 0.3s ease;
 }
-
 .array-item-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-
 .array-item-content {
   padding: 8px 0;
 }
-
 .array-item-header {
   display: flex;
   justify-content: space-between;
@@ -117,35 +88,26 @@ code {
   padding: 8px 0;
   font-weight: 500;
 }
-
 .array-add-item {
   background: #fafafa;
   border: 1px dashed #d9d9d9;
 }
-
-/* Table Renderer Styles */
 .table-renderer {
   width: 100%;
 }
-
 .editable-table .ant-table-tbody > tr:hover > td {
   background: #fafafa;
 }
-
 .editable-table .ant-table-tbody > tr.editing > td {
   background: #f6ffed;
 }
-
-/* Field Styles */
 .computed-field {
   background-color: #f5f5f5 !important;
   cursor: not-allowed;
 }
-
 .computed-field:hover {
   background-color: #f0f0f0 !important;
 }
-
 .field-group {
   border: 1px solid #f0f0f0;
   border-radius: 6px;
@@ -153,153 +115,116 @@ code {
   margin-bottom: 16px;
   background: #fafafa;
 }
-
 .field-group h4 {
   margin-bottom: 16px;
   color: #333;
   font-weight: 600;
 }
-
-/* Rich Text Field Styles */
 .rich-text-field {
   border-radius: 0 0 6px 6px !important;
   border-top: none !important;
 }
-
 .rich-text-container {
   width: 100%;
 }
-
 .rich-text-toolbar {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 40px;
 }
-
-/* Playground Styles */
 .playground-page {
   background: #f5f5f5;
 }
-
 .playground-page .ant-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-
 .playground-page .ant-card-head {
   border-bottom: 1px solid #f0f0f0;
 }
-
-/* Preview Styles */
 .preview-page {
   background: #f5f5f5;
 }
-
 .preview-page .ant-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .json-form-renderer {
     margin: 0;
     border-radius: 0;
   }
-
   .step-content-card {
     margin: 0;
     border-radius: 0;
   }
-
   .actions-bar .ant-card-body {
     padding: 12px;
   }
-
   .step-info {
     display: none;
   }
-
   .playground-page,
   .preview-page {
     padding: 12px;
   }
-
   .array-item-card {
     margin-bottom: 12px;
   }
-
   .form-section-card {
     margin-bottom: 12px;
   }
 }
-
 @media (max-width: 576px) {
   .actions-bar .ant-card-body > div {
     flex-direction: column;
     gap: 12px;
   }
-
   .actions-bar .ant-space {
     width: 100%;
     justify-content: center;
   }
-
   .tab-content {
     padding-top: 12px;
   }
-
   .section-description {
     margin-bottom: 12px;
   }
 }
-
-/* Animation and Transitions */
 .ant-card {
   transition: all 0.3s ease;
 }
-
 .ant-form-item {
   transition: all 0.2s ease;
 }
-
 .ant-btn {
   transition: all 0.2s ease;
 }
-
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: #f0f0f0;
   border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #d9d9d9;
   border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #bfbfbf;
 }
-
-/* Print Styles */
 @media print {
   .actions-bar,
   .steps-navigation,
   .playground-page .ant-card:first-child {
     display: none !important;
   }
-
   .json-form-renderer,
   .step-content-card {
     box-shadow: none !important;
     border: 1px solid #d9d9d9 !important;
   }
-
   .ant-form-item-label {
     font-weight: bold !important;
   }

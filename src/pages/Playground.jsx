@@ -7,29 +7,20 @@ import sampleBasic from '../config/sample.basic.json';
 import sampleAdvanced from '../config/sample.advanced.json';
 import sampleRoles from '../config/sample.roles.json';
 import { getAvailableRoles, USER_ROLES } from '../lib/roles';
-
 const { Title, Text } = Typography;
 const { Option } = Select;
-
-/**
- * Playground page for testing JSON configurations
- */
 const Playground = () => {
-  const [jsonConfig, setJsonConfig] = useState(JSON.stringify(sampleBasic, null, 2));
-  const [parsedConfig, setParsedConfig] = useState(sampleBasic);
+  const [jsonConfig, setJsonConfig] = useState(JSON.stringify(sampleRoles, null, 2));
+  const [parsedConfig, setParsedConfig] = useState(sampleRoles);
   const [parseError, setParseError] = useState(null);
-  const [selectedSample, setSelectedSample] = useState('basic');
+  const [selectedSample, setSelectedSample] = useState('roles');
   const [editorReady, setEditorReady] = useState(false);
   const [userRole, setUserRole] = useState(USER_ROLES.ADMIN);
-
-  // Sample configurations
   const samples = {
     basic: sampleBasic,
     advanced: sampleAdvanced,
     roles: sampleRoles,
   };
-
-  // Parse JSON config
   const parseJsonConfig = useCallback((json) => {
     try {
       const parsed = JSON.parse(json);
@@ -41,14 +32,10 @@ const Playground = () => {
       return false;
     }
   }, []);
-
-  // Handle editor change
   const handleEditorChange = useCallback((value) => {
     setJsonConfig(value || '');
     parseJsonConfig(value || '');
   }, [parseJsonConfig]);
-
-  // Load sample configuration
   const loadSample = useCallback((sampleKey) => {
     const sample = samples[sampleKey];
     if (sample) {
@@ -58,8 +45,6 @@ const Playground = () => {
       parseJsonConfig(jsonString);
     }
   }, [parseJsonConfig]);
-
-  // Copy configuration to clipboard
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(jsonConfig);
@@ -68,8 +53,6 @@ const Playground = () => {
       message.error('Failed to copy to clipboard');
     }
   };
-
-  // Download configuration as file
   const downloadConfig = () => {
     const blob = new Blob([jsonConfig], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -82,39 +65,27 @@ const Playground = () => {
     URL.revokeObjectURL(url);
     message.success('Configuration downloaded');
   };
-
-  // Reset to current sample
   const resetConfig = () => {
     loadSample(selectedSample);
     message.info('Configuration reset to sample');
   };
-
-  // Handle form submission in preview
   const handleFormSubmit = (values, result) => {
     console.log('Form submitted:', { values, result });
     message.success('Form submitted successfully! Check console for details.');
   };
-
-  // Handle step change in preview
   const handleStepChange = (stepIndex, direction, values) => {
     console.log('Step changed:', { stepIndex, direction, values });
   };
-
-  // Handle values change in preview
   const handleValuesChange = (currentValues, prevValues) => {
     console.log('Values changed:', { currentValues, prevValues });
   };
-
-  // Initialize with basic sample
   useEffect(() => {
     parseJsonConfig(jsonConfig);
   }, []);
-
   return (
     <div className="playground-page" style={{ padding: '24px', minHeight: '100vh', background: '#f5f5f5' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-
-        {/* Controls */}
+        {}
         <Card size="small" style={{ marginBottom: '16px' }}>
           <Row gutter={16} align="middle">
             <Col>
@@ -170,9 +141,8 @@ const Playground = () => {
             </Col>
           </Row>
         </Card>
-
         <Row gutter={16} style={{ minHeight: 'calc(100vh - 200px)' }}>
-          {/* Left Panel - JSON Editor */}
+          {}
           <Col xs={24} lg={12}>
             <Card 
               title="JSON Configuration" 
@@ -198,8 +168,7 @@ const Playground = () => {
                   }}
                   theme="vs-light"
                 />
-                
-                {/* Error overlay */}
+                {}
                 {parseError && (
                   <div style={{
                     position: 'absolute',
@@ -221,8 +190,7 @@ const Playground = () => {
               </div>
             </Card>
           </Col>
-
-          {/* Right Panel - Live Preview */}
+          {}
           <Col xs={24} lg={12}>
             <Card 
               title="Live Preview" 
@@ -259,10 +227,8 @@ const Playground = () => {
             </Card>
           </Col>
         </Row>
-
       </div>
     </div>
   );
 };
-
 export default Playground;

@@ -2,11 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Checkbox } from 'antd';
 import { useField } from 'formik';
 import { loadApiOptions } from '../../lib/api';
-
-/**
- * Checkbox Field component
- * Can render as single checkbox or checkbox group
- */
 const CheckboxField = ({ 
   field, 
   formikProps, 
@@ -19,22 +14,15 @@ const CheckboxField = ({
   const { setFieldValue, setFieldTouched, values } = formikProps;
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // Determine if this is a group or single checkbox
   const isGroup = field.options && (field.options.static || field.options.api);
-
-  // Load options for checkbox group
   useEffect(() => {
     if (isGroup) {
       loadOptions();
     }
   }, [field.options, values, isGroup]);
-
   const loadOptions = async () => {
     if (!field.options) return;
-
     const { source, static: staticOptions, api } = field.options;
-
     if (source === 'static' && staticOptions) {
       setOptions(staticOptions);
     } else if (source === 'api' && api) {
@@ -50,21 +38,16 @@ const CheckboxField = ({
       }
     }
   };
-
   const handleSingleChange = (e) => {
     const checked = e.target.checked;
     setFieldValue(field.name, checked);
   };
-
   const handleGroupChange = (checkedValues) => {
     setFieldValue(field.name, checkedValues);
   };
-
   const handleBlur = () => {
     setFieldTouched(field.name, true);
   };
-
-  // Single checkbox
   if (!isGroup) {
     return (
       <Checkbox
@@ -79,8 +62,6 @@ const CheckboxField = ({
       </Checkbox>
     );
   }
-
-  // Checkbox group
   const checkboxGroupProps = {
     value: formikField.value || [],
     onChange: handleGroupChange,
@@ -89,10 +70,7 @@ const CheckboxField = ({
     style,
     className,
   };
-
-  // Handle different layouts
   const { layout = 'horizontal' } = field;
-
   if (layout === 'vertical') {
     return (
       <Checkbox.Group {...checkboxGroupProps}>
@@ -110,8 +88,6 @@ const CheckboxField = ({
       </Checkbox.Group>
     );
   }
-
-  // Horizontal layout
   return (
     <Checkbox.Group {...checkboxGroupProps}>
       {options.map((option, index) => (
@@ -127,5 +103,4 @@ const CheckboxField = ({
     </Checkbox.Group>
   );
 };
-
 export default CheckboxField;

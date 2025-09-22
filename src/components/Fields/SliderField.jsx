@@ -1,10 +1,6 @@
 import React from 'react';
 import { Slider, InputNumber, Row, Col } from 'antd';
 import { useField } from 'formik';
-
-/**
- * Slider Field component
- */
 const SliderField = ({ 
   field, 
   formikProps, 
@@ -15,19 +11,15 @@ const SliderField = ({
 }) => {
   const [formikField, meta] = useField(field.name);
   const { setFieldValue, setFieldTouched } = formikProps;
-
   const handleSliderChange = (value) => {
     setFieldValue(field.name, value);
   };
-
   const handleInputChange = (value) => {
     setFieldValue(field.name, value);
   };
-
   const handleBlur = () => {
     setFieldTouched(field.name, true);
   };
-
   const sliderProps = {
     value: formikField.value || field.min || 0,
     onChange: handleSliderChange,
@@ -50,8 +42,6 @@ const SliderField = ({
       ...field.tooltip
     },
   };
-
-  // Show input alongside slider if specified
   if (field.showInput) {
     return (
       <Row gutter={16} align="middle">
@@ -74,8 +64,6 @@ const SliderField = ({
       </Row>
     );
   }
-
   return <Slider {...sliderProps} />;
 };
-
 export default SliderField;

@@ -3,10 +3,6 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '../App';
 import Playground from '../pages/Playground';
 import Preview from '../pages/Preview';
-
-/**
- * Application routes configuration
- */
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -27,5 +23,4 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
-
 export default router;

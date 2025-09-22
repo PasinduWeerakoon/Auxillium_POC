@@ -6,19 +6,12 @@ import sampleBasic from '../config/sample.basic.json';
 import sampleAdvanced from '../config/sample.advanced.json';
 import sampleRoles from '../config/sample.roles.json';
 import { getAvailableRoles, USER_ROLES } from '../lib/roles';
-
 const { Title, Text } = Typography;
 const { Option } = Select;
-
-/**
- * Preview page for viewing sample forms
- */
 const Preview = () => {
-  const [selectedSample, setSelectedSample] = useState('basic');
+  const [selectedSample, setSelectedSample] = useState('roles');
   const [key, setKey] = useState(0);
-  const [userRole, setUserRole] = useState(USER_ROLES.ADMIN); // For forcing re-render
-
-  // Sample configurations
+  const [userRole, setUserRole] = useState(USER_ROLES.ADMIN); 
   const samples = {
     basic: {
       config: sampleBasic,
@@ -36,43 +29,32 @@ const Preview = () => {
       description: 'Demonstrates role-based field, tab, and step restrictions.'
     }
   };
-
   const currentSample = samples[selectedSample];
-
-  // Handle form submission
   const handleFormSubmit = (values, result) => {
     console.log('Form submitted:', { values, result });
     message.success('Form submitted successfully! Check console for details.');
   };
-
-  // Handle step change
   const handleStepChange = (stepIndex, direction, values) => {
     console.log('Step changed:', { stepIndex, direction, values });
   };
-
-  // Handle values change
   const handleValuesChange = (currentValues, prevValues) => {
     console.log('Values changed:', { currentValues, prevValues });
   };
-
-  // Reset form
   const resetForm = () => {
     setKey(prev => prev + 1);
     message.info('Form reset');
   };
-
   return (
     <div className="preview-page" style={{ padding: '24px', minHeight: '100vh', background: '#f5f5f5' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Header */}
+        {}
         <div style={{ marginBottom: '24px' }}>
           <Title level={2}>Form Preview</Title>
           <Text type="secondary">
             Preview and interact with sample form configurations.
           </Text>
         </div>
-
-        {/* Controls */}
+        {}
         <Card size="small" style={{ marginBottom: '16px' }}>
           <Space align="center">
             <Text strong>Sample: </Text>
@@ -106,8 +88,7 @@ const Preview = () => {
             </Button>
           </Space>
         </Card>
-
-        {/* Form Info */}
+        {}
         <Card 
           title={currentSample.title}
           size="small" 
@@ -115,8 +96,7 @@ const Preview = () => {
         >
           <Text>{currentSample.description}</Text>
         </Card>
-
-        {/* Form Preview */}
+        {}
         <Card 
           title="Form"
           size="small"
@@ -135,5 +115,4 @@ const Preview = () => {
     </div>
   );
 };
-
 export default Preview;

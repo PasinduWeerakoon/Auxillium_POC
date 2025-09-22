@@ -4,10 +4,6 @@ import { PlusOutlined, DeleteOutlined, EditOutlined, SaveOutlined, CloseOutlined
 import { useField } from 'formik';
 import { getFieldComponent } from '../../lib/registry';
 import { deepClone, generateId } from '../../lib/utils';
-
-/**
- * Table Renderer component for displaying and editing tabular data
- */
 const TableRenderer = ({ 
   field, 
   formikProps, 
@@ -19,7 +15,6 @@ const TableRenderer = ({
   const { setFieldValue } = formikProps;
   const [editingKeys, setEditingKeys] = useState([]);
   const [editingRecord, setEditingRecord] = useState({});
-
   const {
     columns = [],
     editable = true,
@@ -33,29 +28,20 @@ const TableRenderer = ({
     addButtonText = 'Add Row',
     confirmDelete = true,
   } = field;
-
-  // Get data source
   const dataSource = useMemo(() => {
     let data = [];
-    
     if (dataPath) {
-      // Use data from a different path in form values
       const pathValue = getNestedValue(formikProps.values, dataPath);
       data = Array.isArray(pathValue) ? pathValue : [];
     } else {
-      // Use field's own value
       data = Array.isArray(formikField.value) ? formikField.value : [];
     }
-    
-    // Ensure each row has a unique key
     return data.map((row, index) => ({
       ...row,
       [rowKey]: row[rowKey] || generateId(),
       _index: index,
     }));
   }, [formikField.value, formikProps.values, dataPath, rowKey]);
-
-  // Create table columns
   const tableColumns = useMemo(() => {
     const cols = columns.map(col => ({
       title: col.title,
@@ -64,8 +50,6 @@ const TableRenderer = ({
       width: col.width,
       render: (text, record, index) => renderCell(text, record, index, col),
     }));
-
-    // Add action column if table is editable
     if (editable && (removable || editingKeys.length > 0)) {
       cols.push({
         title: 'Actions',
@@ -74,27 +58,17 @@ const TableRenderer = ({
         render: (text, record) => renderActions(record),
       });
     }
-
     return cols;
   }, [columns, editable, removable, editingKeys]);
-
-  // Render cell content
   const renderCell = (text, record, index, column) => {
     const isEditing = editingKeys.includes(record[rowKey]);
-    
     if (!editable || !isEditing) {
-      // Read-only mode
       return formatCellValue(text, column);
     }
-
-    // Edit mode
     return renderEditableCell(text, record, column);
   };
-
-  // Format cell value for display
   const formatCellValue = (value, column) => {
     if (value == null) return '-';
-    
     switch (column.type) {
       case 'date':
         return new Date(value).toLocaleDateString();
@@ -108,11 +82,8 @@ const TableRenderer = ({
         return String(value);
     }
   };
-
-  // Render editable cell
   const renderEditableCell = (text, record, column) => {
     const FieldComponent = getFieldComponent(column.type || 'text');
-    
     if (!FieldComponent) {
       return (
         <Input
@@ -121,18 +92,15 @@ const TableRenderer = ({
         />
       );
     }
-
     const cellField = {
       ...column,
       name: column.key,
     };
-
     const cellFormikProps = {
       values: editingRecord,
       setFieldValue: (name, value) => handleCellChange(record[rowKey], name, value),
       setFieldTouched: () => {},
     };
-
     return (
       <FieldComponent
         field={cellField}
@@ -141,11 +109,8 @@ const TableRenderer = ({
       />
     );
   };
-
-  // Render action buttons
   const renderActions = (record) => {
     const isEditing = editingKeys.includes(record[rowKey]);
-
     if (isEditing) {
       return (
         <Space size="small">
@@ -168,7 +133,6 @@ const TableRenderer = ({
         </Space>
       );
     }
-
     return (
       <Space size="small">
         <Button
@@ -202,28 +166,20 @@ const TableRenderer = ({
       </Space>
     );
   };
-
-  // Handle cell value change
   const handleCellChange = (recordKey, columnKey, value) => {
     setEditingRecord(prev => ({
       ...prev,
       [columnKey]: value,
     }));
   };
-
-  // Start editing a record
   const startEdit = (record) => {
     setEditingKeys([...editingKeys, record[rowKey]]);
     setEditingRecord(deepClone(record));
   };
-
-  // Cancel editing
   const cancelEdit = (record) => {
     setEditingKeys(editingKeys.filter(key => key !== record[rowKey]));
     setEditingRecord({});
   };
-
-  // Save edited record
   const saveRecord = (record) => {
     const newData = dataSource.map(item => {
       if (item[rowKey] === record[rowKey]) {
@@ -231,55 +187,40 @@ const TableRenderer = ({
       }
       return item;
     });
-
     updateData(newData);
     setEditingKeys(editingKeys.filter(key => key !== record[rowKey]));
     setEditingRecord({});
   };
-
-  // Delete record
   const deleteRecord = (record) => {
     const newData = dataSource.filter(item => item[rowKey] !== record[rowKey]);
     updateData(newData);
   };
-
-  // Add new record
   const addRecord = () => {
     const newRecord = {
       [rowKey]: generateId(),
       _index: dataSource.length,
     };
-
-    // Initialize with default values from column definitions
     columns.forEach(col => {
       if (col.defaultValue !== undefined) {
         newRecord[col.key] = col.defaultValue;
       }
     });
-
     const newData = [...dataSource, newRecord];
     updateData(newData);
     startEdit(newRecord);
   };
-
-  // Update data source
   const updateData = (newData) => {
-    // Remove internal fields
     const cleanData = newData.map(({ _index, ...item }) => item);
-    
     if (dataPath) {
-      // Update data at specified path
       setNestedValue(formikProps.values, dataPath, cleanData);
       setFieldValue(dataPath, cleanData);
     } else {
-      // Update field's own value
       setFieldValue(field.name, cleanData);
     }
   };
-
   return (
     <div className={`table-renderer ${className || ''}`} style={style}>
-      {/* Add button */}
+      {}
       {addable && (
         <div style={{ marginBottom: '16px' }}>
           <Button
@@ -292,8 +233,7 @@ const TableRenderer = ({
           </Button>
         </div>
       )}
-
-      {/* Table */}
+      {}
       <Table
         columns={tableColumns}
         dataSource={dataSource}
@@ -307,12 +247,9 @@ const TableRenderer = ({
     </div>
   );
 };
-
-// Helper functions
 const getNestedValue = (obj, path) => {
   return path.split('.').reduce((current, key) => current?.[key], obj);
 };
-
 const setNestedValue = (obj, path, value) => {
   const keys = path.split('.');
   const lastKey = keys.pop();
@@ -322,5 +259,4 @@ const setNestedValue = (obj, path, value) => {
   }, obj);
   target[lastKey] = value;
 };
-
 export default TableRenderer;

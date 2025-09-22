@@ -8,11 +8,6 @@ import { executeApiAction } from '../../lib/api';
 import { get, set, deepClone } from '../../lib/utils';
 import { evaluateComputed, getComputedDependencies, getFieldsToRecalculate } from '../../lib/conditions';
 import { filterConfigByRole } from '../../lib/roles';
-
-/**
- * Main JSON Form Renderer component
- * Orchestrates the rendering of multi-step forms from JSON configuration
- */
 const JsonFormRenderer = ({ 
   config, 
   onSubmit, 
@@ -22,13 +17,10 @@ const JsonFormRenderer = ({
   className,
   style 
 }) => {
-  // Filter configuration based on user role
   const filteredConfig = useMemo(() => 
     userRole ? filterConfigByRole(config, userRole) : config, 
     [config, userRole]
   );
-
-  // Extract configuration
   const {
     meta = {},
     theme = {},
@@ -37,12 +29,8 @@ const JsonFormRenderer = ({
     initialValues = {},
     actions = []
   } = filteredConfig || {};
-
-  // Create theme configuration
   const antdTheme = useMemo(() => createAntdTheme(theme), [theme]);
   const formConfig = useMemo(() => createFormConfig(theme), [theme]);
-
-  // Get computed field dependencies
   const computedDependencies = useMemo(() => {
     const allFields = [];
     steps.forEach(step => {
@@ -55,32 +43,24 @@ const JsonFormRenderer = ({
     });
     return getComputedDependencies(allFields);
   }, [steps]);
-
-  // Handle form submission
   const handleSubmit = useCallback(async (values, formikHelpers) => {
     try {
-      // Find submit action
       const submitAction = actions.find(action => action.type === 'submit');
-      
       if (submitAction && submitAction.api) {
-        // Execute API submission
         const result = await executeApiAction(submitAction, values);
         notification.success({
           message: 'Form Submitted',
           description: submitAction.successMessage || 'Form submitted successfully',
         });
-        
         if (onSubmit) {
           onSubmit(values, result);
         }
       } else {
-        // Default submission
         console.log('Form submitted:', values);
         notification.success({
           message: 'Form Submitted',
           description: 'Form data logged to console',
         });
-        
         if (onSubmit) {
           onSubmit(values);
         }
@@ -95,21 +75,14 @@ const JsonFormRenderer = ({
       formikHelpers.setSubmitting(false);
     }
   }, [actions, onSubmit]);
-
-  // Handle step change
   const handleStepChange = useCallback((stepIndex, direction, formikProps) => {
     if (onStepChange) {
       onStepChange(stepIndex, direction, formikProps.values);
     }
   }, [onStepChange]);
-
-  // Handle computed field updates
   const handleValuesChange = useCallback((prevValues, currentValues, setFieldValue) => {
-    // Check which computed fields need recalculation
     const fieldsToRecalc = getFieldsToRecalculate(prevValues, currentValues, computedDependencies);
-    
     if (fieldsToRecalc.length > 0) {
-      // Find all computed fields
       const allFields = [];
       steps.forEach(step => {
         const collectFields = (container) => {
@@ -119,8 +92,6 @@ const JsonFormRenderer = ({
         };
         collectFields(step);
       });
-
-      // Recalculate computed fields
       fieldsToRecalc.forEach(fieldName => {
         const field = allFields.find(f => f.name === fieldName);
         if (field && field.computed) {
@@ -131,17 +102,12 @@ const JsonFormRenderer = ({
         }
       });
     }
-
     if (onValuesChange) {
       onValuesChange(currentValues, prevValues);
     }
   }, [steps, computedDependencies, onValuesChange]);
-
-  // Initialize computed fields
   const initialValuesWithComputed = useMemo(() => {
     const values = deepClone(initialValues);
-    
-    // Collect all fields
     const allFields = [];
     steps.forEach(step => {
       const collectFields = (container) => {
@@ -151,8 +117,6 @@ const JsonFormRenderer = ({
       };
       collectFields(step);
     });
-
-    // Set initial computed values
     allFields.forEach(field => {
       if (field.computed && field.name) {
         const computedValue = evaluateComputed(field.computed, values);
@@ -161,10 +125,8 @@ const JsonFormRenderer = ({
         }
       }
     });
-
     return values;
   }, [initialValues, steps]);
-
   if (!config || !steps || steps.length === 0) {
     return (
       <div className="json-form-renderer-error">
@@ -172,7 +134,6 @@ const JsonFormRenderer = ({
       </div>
     );
   }
-
   return (
     <ConfigProvider theme={antdTheme}>
       <div className={`json-form-renderer ${className || ''}`} style={style}>
@@ -196,10 +157,6 @@ const JsonFormRenderer = ({
     </ConfigProvider>
   );
 };
-
-/**
- * Form wrapper component to handle Formik context
- */
 const FormWrapper = ({ 
   formikProps, 
   config, 
@@ -210,8 +167,6 @@ const FormWrapper = ({
 }) => {
   const { values, setFieldValue } = formikProps;
   const prevValuesRef = React.useRef(values);
-
-  // Watch for value changes
   useEffect(() => {
     const prevValues = prevValuesRef.current;
     if (prevValues !== values) {
@@ -219,7 +174,6 @@ const FormWrapper = ({
       prevValuesRef.current = values;
     }
   }, [values, setFieldValue, onValuesChange]);
-
   return (
     <Form {...formConfig}>
       <StepWizard
@@ -234,5 +188,4 @@ const FormWrapper = ({
     </Form>
   );
 };
-
 export default JsonFormRenderer;

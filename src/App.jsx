@@ -4,17 +4,10 @@ import { Layout, Menu, Typography, Space } from 'antd';
 import { PlayCircleOutlined, EyeOutlined, CodeOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css';
 import './styles/index.css';
-
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
-
-/**
- * Main App component with layout and navigation
- */
 function App() {
   const location = useLocation();
-
-  // Menu items
   const menuItems = [
     {
       key: '/playground',
@@ -27,10 +20,9 @@ function App() {
       label: <Link to="/preview">Preview</Link>,
     },
   ];
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {/* Header */}
+      {}
       <Header style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -45,7 +37,6 @@ function App() {
             Axillium POC
           </Title>
         </div>
-        
         <Menu
           mode="horizontal"
           selectedKeys={[location.pathname]}
@@ -57,13 +48,11 @@ function App() {
           }}
         />
       </Header>
-
-      {/* Main Content */}
+      {}
       <Content style={{ flex: 1 }}>
         <Outlet />
       </Content>
-
-      {/* Footer */}
+      {}
       <Footer style={{ 
         textAlign: 'center', 
         background: '#fafafa',
@@ -76,5 +65,4 @@ function App() {
     </Layout>
   );
 }
-
 export default App;

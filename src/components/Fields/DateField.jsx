@@ -2,10 +2,6 @@ import React from 'react';
 import { DatePicker } from 'antd';
 import { useField } from 'formik';
 import dayjs from 'dayjs';
-
-/**
- * Date Field component
- */
 const DateField = ({ 
   field, 
   formikProps, 
@@ -17,20 +13,14 @@ const DateField = ({
 }) => {
   const [formikField, meta] = useField(field.name);
   const { setFieldValue, setFieldTouched } = formikProps;
-
   const handleChange = (date, dateString) => {
-    // Store as ISO string or the format specified
     const value = date ? date.toISOString() : null;
     setFieldValue(field.name, value);
   };
-
   const handleBlur = () => {
     setFieldTouched(field.name, true);
   };
-
-  // Convert value to dayjs object for DatePicker
   const dateValue = formikField.value ? dayjs(formikField.value) : null;
-
   const datePickerProps = {
     value: dateValue,
     onChange: handleChange,
@@ -45,14 +35,11 @@ const DateField = ({
     showTime: field.showTime || false,
     showToday: field.showToday !== false,
   };
-
-  // Add min/max dates if specified
   if (field.minDate) {
     datePickerProps.disabledDate = (current) => {
       return current && current < dayjs(field.minDate);
     };
   }
-  
   if (field.maxDate) {
     const existingDisabledDate = datePickerProps.disabledDate;
     datePickerProps.disabledDate = (current) => {
@@ -61,10 +48,7 @@ const DateField = ({
       return beforeMin || afterMax;
     };
   }
-
-  // Handle different picker modes
   const { mode = 'date' } = field;
-
   switch (mode) {
     case 'week':
       return <DatePicker.WeekPicker {...datePickerProps} />;
@@ -80,5 +64,4 @@ const DateField = ({
       return <DatePicker {...datePickerProps} />;
   }
 };
-
 export default DateField;

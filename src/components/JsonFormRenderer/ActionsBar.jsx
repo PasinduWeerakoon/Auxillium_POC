@@ -1,10 +1,6 @@
 import React from 'react';
 import { Button, Space, Card, notification } from 'antd';
 import { executeApiAction } from '../../lib/api';
-
-/**
- * Actions Bar component for step navigation and form actions
- */
 const ActionsBar = ({ 
   currentStep, 
   totalSteps, 
@@ -13,8 +9,6 @@ const ActionsBar = ({
   onStepChange 
 }) => {
   const { values, resetForm, isSubmitting, submitForm } = formikProps;
-
-  // Handle action click
   const handleActionClick = async (action) => {
     try {
       switch (action.type) {
@@ -23,17 +17,14 @@ const ActionsBar = ({
             onStepChange(currentStep - 1, 'prev');
           }
           break;
-          
         case 'next':
           if (currentStep < totalSteps - 1) {
             onStepChange(currentStep + 1, 'next');
           }
           break;
-          
         case 'submit':
           await submitForm();
           break;
-          
         case 'reset':
           resetForm();
           notification.info({
@@ -41,7 +32,6 @@ const ActionsBar = ({
             description: 'Form has been reset to initial values',
           });
           break;
-          
         case 'custom':
           if (action.action === 'apiCall' && action.api) {
             try {
@@ -50,8 +40,6 @@ const ActionsBar = ({
                 message: action.successMessage || 'Action Completed',
                 description: action.successDescription || 'Action executed successfully',
               });
-              
-              // If action has a callback, execute it
               if (action.onSuccess) {
                 action.onSuccess(result, values);
               }
@@ -65,7 +53,6 @@ const ActionsBar = ({
             action.onClick(values, formikProps);
           }
           break;
-          
         default:
           console.warn(`Unknown action type: ${action.type}`);
       }
@@ -77,8 +64,6 @@ const ActionsBar = ({
       });
     }
   };
-
-  // Get button type based on action type
   const getButtonType = (action) => {
     switch (action.type) {
       case 'submit':
@@ -95,8 +80,6 @@ const ActionsBar = ({
         return 'default';
     }
   };
-
-  // Get button props
   const getButtonProps = (action) => {
     const baseProps = {
       type: getButtonType(action),
@@ -109,33 +92,22 @@ const ActionsBar = ({
       className: action.className,
       style: action.style,
     };
-
-    // Special handling for navigation buttons
     if (action.type === 'prev') {
       baseProps.disabled = baseProps.disabled || currentStep === 0;
     } else if (action.type === 'next') {
       baseProps.disabled = baseProps.disabled || currentStep === totalSteps - 1;
     }
-
     return baseProps;
   };
-
-  // Filter and sort actions
   const visibleActions = stepActions.filter(action => {
-    // Hide next button on last step if submit button is present
     if (action.type === 'next' && currentStep === totalSteps - 1) {
       return !stepActions.some(a => a.type === 'submit');
     }
-    
-    // Hide prev button on first step
     if (action.type === 'prev' && currentStep === 0) {
       return false;
     }
-    
     return true;
   });
-
-  // Sort actions by type priority
   const sortedActions = visibleActions.sort((a, b) => {
     const priority = {
       'prev': 1,
@@ -146,15 +118,13 @@ const ActionsBar = ({
     };
     return (priority[a.type] || 3) - (priority[b.type] || 3);
   });
-
   if (sortedActions.length === 0) {
     return null;
   }
-
   return (
     <Card className="actions-bar" size="small" style={{ marginTop: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {/* Left side actions (prev, reset) */}
+        {}
         <Space>
           {sortedActions
             .filter(action => ['prev', 'reset'].includes(action.type))
@@ -169,15 +139,13 @@ const ActionsBar = ({
             ))
           }
         </Space>
-
-        {/* Center information */}
+        {}
         {totalSteps > 1 && (
           <span className="step-info">
             Step {currentStep + 1} of {totalSteps}
           </span>
         )}
-
-        {/* Right side actions (custom, next, submit) */}
+        {}
         <Space>
           {sortedActions
             .filter(action => ['custom', 'next', 'submit'].includes(action.type))
@@ -196,12 +164,7 @@ const ActionsBar = ({
     </Card>
   );
 };
-
-/**
- * Capitalize first letter of a string
- */
 const capitalizeFirst = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
-
 export default ActionsBar;

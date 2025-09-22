@@ -2,25 +2,18 @@ import React, { useState } from 'react';
 import { Tabs } from 'antd';
 import Section from './Section';
 import { isRoleVisible } from '../../lib/roles';
-
-/**
- * Tab Container component for rendering tabbed sections
- */
 const TabContainer = ({ tabs, formikProps, formConfig, layout, userRole }) => {
-  // Filter tabs based on user role and create tab items
   const visibleTabs = tabs.filter(tab => !userRole || isRoleVisible(userRole, tab));
   const [activeTab, setActiveTab] = useState(visibleTabs[0]?.id || '0');
   const tabItems = visibleTabs.map((tab, index) => {
-    // Create clean tab item without any deprecated props
     const { destroyInactiveTabPane, ...cleanTab } = tab;
-    
     return {
       key: cleanTab.id || String(index),
       label: cleanTab.title || `Tab ${index + 1}`,
-      destroyOnHidden: false, // Use the new prop explicitly
+      destroyOnHidden: false, 
       children: (
       <div className="tab-content">
-        {/* Render sections within tab */}
+        {}
         {tab.sections && tab.sections.length > 0 && (
           <div className="tab-sections">
             {tab.sections.map((section, sectionIndex) => (
@@ -35,8 +28,7 @@ const TabContainer = ({ tabs, formikProps, formConfig, layout, userRole }) => {
             ))}
           </div>
         )}
-
-        {/* Render direct fields within tab */}
+        {}
         {tab.fields && tab.fields.length > 0 && (
           <Section
             section={{ 
@@ -54,7 +46,6 @@ const TabContainer = ({ tabs, formikProps, formConfig, layout, userRole }) => {
       )
     };
   });
-
   return (
     <div className="tab-container">
       <Tabs
@@ -68,5 +59,4 @@ const TabContainer = ({ tabs, formikProps, formConfig, layout, userRole }) => {
     </div>
   );
 };
-
 export default TabContainer;
